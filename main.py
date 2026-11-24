@@ -63,6 +63,7 @@ class MathAlarmApp(App):
     def build(self):
         self.title = "MathAlarm"
         Window.clearcolor = BG
+        Window.softinput_mode = "below_target"
         data_dir = Path(self.user_data_dir)
         data_dir.mkdir(parents=True, exist_ok=True)
         self.store = AlarmStore(data_dir / "alarms.sqlite3")
