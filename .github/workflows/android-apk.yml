@@ -18,17 +18,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build debug APK
-        id: buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        with:
-          command: buildozer android debug
-          workdir: .
-          buildozer_version: stable
+      - name: Build debug APK with official Buildozer image
+        run: |
+          docker run --rm --volume "$PWD:/home/user/hostcwd" ghcr.io/kivy/buildozer:latest android debug
+          test -n "$(find bin -maxdepth 1 -name "*.apk" -print -quit)"
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: mathalarm-android-debug
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
           if-no-files-found: error
           retention-days: 30
