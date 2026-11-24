@@ -6,12 +6,15 @@ source.dir = .
 source.include_exts = py,kv,png,jpg
 source.exclude_dirs = tests,docs
 version = 0.1.0
-requirements = python3,kivy,sqlite3
+requirements = python3,kivy==2.3.2,sqlite3
 orientation = portrait
 fullscreen = 0
 android.minapi = 24
+android.api = 36
+android.ndk = 29
 android.archs = arm64-v8a
 android.accept_sdk_license = True
+p4a.branch = develop
 
 [buildozer]
 log_level = 2
