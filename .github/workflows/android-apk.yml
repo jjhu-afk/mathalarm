@@ -1,0 +1,34 @@
+name: Build Android APK
+on:
+  push:
+    paths:
+      - "main.py"
+      - "mathalarm/**"
+      - "buildozer.spec"
+      - ".github/workflows/android-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build debug APK
+        id: buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          workdir: .
+          buildozer_version: stable
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathalarm-android-debug
+          path: ${{ steps.buildozer.outputs.filename }}
+          if-no-files-found: error
+          retention-days: 30
