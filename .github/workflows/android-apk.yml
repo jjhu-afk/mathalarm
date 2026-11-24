@@ -4,6 +4,7 @@ on:
     paths:
       - "main.py"
       - "mathalarm/**"
+      - "android_src/**"
       - "buildozer.spec"
       - ".github/workflows/android-apk.yml"
   workflow_dispatch:
