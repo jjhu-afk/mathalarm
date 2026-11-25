@@ -1,0 +1,43 @@
+name: Build Android APK
+on:
+  push:
+    paths:
+      - "main.py"
+      - "mathalarm/**"
+      - "buildozer.spec"
+      - ".github/workflows/android-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build debug APK with official Buildozer image
+        run: |
+          if ! docker run --rm --volume "$PWD:/home/user/hostcwd" ghcr.io/kivy/buildozer:latest android debug > buildozer.log 2>&1; then
+            tail -n 160 buildozer.log
+            exit 1
+          fi
+          tail -n 20 buildozer.log
+          test -n "$(find bin -maxdepth 1 -name '*.apk' -print -quit)"
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathalarm-android-build-log
+          path: buildozer.log
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathalarm-android-debug
+          path: bin/*.apk
+          if-no-files-found: error
+          retention-days: 30
